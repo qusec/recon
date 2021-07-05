@@ -2,14 +2,35 @@
 
 echo "This is my recon script"
 
-target=$1
-threads=$2
-output_dir=$3
+while getopts ":d:t:o:" arg; do
+  case $arg in
+    d) target=$OPTARG;;
+    t) threads=$OPTARG;;
+    o) output_dir=$OPTARG;;
+  esac
+done
+echo -e "\n$target  $threads   $output_dir\n"
+
+if [ -z "${target}" ]; then
+    echo "Invalid arguments\nUsage: ./recon.sh -d example.com -t concurrency (default 25) -o folder (default .)"
+    exit 1
+fi
+
+#target=$1
+#threads=$2
+#output_dir=$3
+
+if [ -z "$threads" ]
+then
+    threads=25
+fi
 
 if [ -z $output_dir ]
 then
     output_dir="."
 fi
+
+echo "./recon.sh -d $target -t $threads -o $output_dir"
 
 project_path=$output_dir/$target
 mkdir -p $project_path
