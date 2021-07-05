@@ -39,8 +39,20 @@ run_assetfinder() {
     cat $assetfinder_dir/$target.txt | anew $results
 }
 
+run_subfinder() {
+    subfinder_dir=$project_path/subfinder
+    mkdir -p $subfinder_dir
+    subfinder -d $target -t $threads -silent -o $subfinder_dir/$target.txt
+    cat $subfinder_dir/$target.txt | anew $results
+}
+
 run_httprobe() {
     cat $results | httprobe -c $threads | anew $active_results
+}
+
+run_fff() {
+    fff_dir=$project_path/fff
+    cat $active_results | fff -d 5 -S -o $fff_dir
 }
 
 run_aquatone() {
@@ -49,15 +61,20 @@ run_aquatone() {
     cat $active_results | aquatone -scan-timeout 1000 -chrome-path=/usr/bin/chromium -out $(pwd)/$aquatone_dir
 }
 
+
 # run http service to server the recon results
 run_httpserver
 
 # Discovery
 run_sublister
 run_assetfinder
+run_subfinder
 
 # http probe
 run_httprobe
+
+# dump body and headers
+run_fff
 
 # screenshots
 run_aquatone
