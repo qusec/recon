@@ -1,5 +1,12 @@
 #!/bin/sh
 
-ip=$1
-json_file=$2
-censys view $ip -f json -o $json_file
+ips_file=$1
+out_dir=$2
+
+mkdir -p $out_dir
+while IFS= read -r ip 
+do
+    echo "Fetching censys data for IP="$ip
+    #touch $out_dir/$ip.json
+    censys view $ip -f json -o $out_dir/$ip.json
+done < "$ips_file"
